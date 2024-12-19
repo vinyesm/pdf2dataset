@@ -213,25 +213,25 @@ def download(
     else:
         blurrer = None
 
-    resizer = Resizer(
-        image_size=image_size,
-        resize_mode=resize_mode,
-        resize_only_if_bigger=resize_only_if_bigger,
-        upscale_interpolation=upscale_interpolation,
-        downscale_interpolation=downscale_interpolation,
-        encode_quality=encode_quality,
-        encode_format=encode_format,
-        skip_reencode=skip_reencode,
-        disable_all_reencoding=disable_all_reencoding,
-        min_image_size=min_image_size,
-        max_image_area=max_image_area,
-        max_aspect_ratio=max_aspect_ratio,
-        blurrer=blurrer,
-    )
+    # resizer = Resizer(
+    #     image_size=image_size,
+    #     resize_mode=resize_mode,
+    #     resize_only_if_bigger=resize_only_if_bigger,
+    #     upscale_interpolation=upscale_interpolation,
+    #     downscale_interpolation=downscale_interpolation,
+    #     encode_quality=encode_quality,
+    #     encode_format=encode_format,
+    #     skip_reencode=skip_reencode,
+    #     disable_all_reencoding=disable_all_reencoding,
+    #     min_image_size=min_image_size,
+    #     max_image_area=max_image_area,
+    #     max_aspect_ratio=max_aspect_ratio,
+    #     blurrer=blurrer,
+    # )
 
     downloader = Downloader(
         sample_writer_class=sample_writer_class,
-        resizer=resizer,
+        resizer=None,
         thread_count=thread_count,
         save_caption=save_caption,
         extract_exif=extract_exif,

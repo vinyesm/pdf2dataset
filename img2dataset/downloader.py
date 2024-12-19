@@ -40,10 +40,13 @@ def download_image(row, timeout, user_agent_token, disallowed_header_directives)
     img_stream = None
     user_agent_string = "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:72.0) Gecko/20100101 Firefox/72.0"
     if user_agent_token:
-        user_agent_string += f" (compatible; {user_agent_token}; +https://github.com/rom1504/img2dataset)"
+        user_agent_string += f" (compatible; {user_agent_token}; +https://github.com/vinyesm/pdf2dataset)"
     try:
         request = urllib.request.Request(url, data=None, headers={"User-Agent": user_agent_string})
         with urllib.request.urlopen(request, timeout=timeout) as r:
+            content_type = r.headers.get("Content-Type", "").lower()
+            if "application/pdf" not in content_type:
+                return key, None, "URL does not point to a PDF file"
             if disallowed_header_directives and is_disallowed(
                 r.headers,
                 user_agent_token,
@@ -229,11 +232,11 @@ class Downloader:
                         "original_width": None,
                         "original_height": None,
                     }
-                    if self.extract_exif:
-                        meta["exif"] = None
+                    # if self.extract_exif:
+                    #     meta["exif"] = None
 
-                    if self.compute_hash is not None:
-                        meta[self.compute_hash] = None
+                    # if self.compute_hash is not None:
+                    #     meta[self.compute_hash] = None
 
                     if error_message is not None:
                         failed_to_download += 1
@@ -249,82 +252,83 @@ class Downloader:
                         semaphore.release()
                         continue
 
-                    if hash_indice is not None:
-                        img_stream.seek(0)
-                        test_hash = getattr(hashlib, self.verify_hash_type)(img_stream.read()).hexdigest()
-                        if test_hash != sample_data[hash_indice]:
-                            failed_to_download += 1
-                            status = "failed_to_download"
-                            status_dict.increment("hash mismatch")
-                            meta["status"] = status
-                            meta["error_message"] = "hash mismatch"
-                            sample_writer.write(
-                                None,
-                                str_key,
-                                sample_data[caption_indice] if caption_indice is not None else None,
-                                meta,
-                            )
-                            img_stream.close()
-                            del img_stream
-                            semaphore.release()
-                            continue
+                    # if hash_indice is not None:
+                    #     img_stream.seek(0)
+                    #     test_hash = getattr(hashlib, self.verify_hash_type)(img_stream.read()).hexdigest()
+                    #     if test_hash != sample_data[hash_indice]:
+                    #         failed_to_download += 1
+                    #         status = "failed_to_download"
+                    #         status_dict.increment("hash mismatch")
+                    #         meta["status"] = status
+                    #         meta["error_message"] = "hash mismatch"
+                    #         sample_writer.write(
+                    #             None,
+                    #             str_key,
+                    #             sample_data[caption_indice] if caption_indice is not None else None,
+                    #             meta,
+                    #         )
+                    #         img_stream.close()
+                    #         del img_stream
+                    #         semaphore.release()
+                    #         continue
 
-                    img_stream.seek(0)
-                    bbox_list = sample_data[bbox_indice] if bbox_indice is not None else None
-                    (
-                        img,
-                        width,
-                        height,
-                        original_width,
-                        original_height,
-                        error_message,
-                    ) = self.resizer(img_stream, bbox_list)
-                    if error_message is not None:
-                        failed_to_resize += 1
-                        status = "failed_to_resize"
-                        status_dict.increment(error_message)
-                        meta["status"] = status
-                        meta["error_message"] = error_message
-                        sample_writer.write(
-                            None,
-                            str_key,
-                            sample_data[caption_indice] if caption_indice is not None else None,
-                            meta,
-                        )
-                        img_stream.close()
-                        del img_stream
-                        semaphore.release()
-                        continue
+                    # img_stream.seek(0)
+                    # bbox_list = sample_data[bbox_indice] if bbox_indice is not None else None
+                    # (
+                    #     img,
+                    #     width,
+                    #     height,
+                    #     original_width,
+                    #     original_height,
+                    #     error_message,
+                    # ) = self.resizer(img_stream, bbox_list)
+                    # if error_message is not None:
+                    #     failed_to_resize += 1
+                    #     status = "failed_to_resize"
+                    #     status_dict.increment(error_message)
+                    #     meta["status"] = status
+                    #     meta["error_message"] = error_message
+                    #     sample_writer.write(
+                    #         None,
+                    #         str_key,
+                    #         sample_data[caption_indice] if caption_indice is not None else None,
+                    #         meta,
+                    #     )
+                    #     img_stream.close()
+                    #     del img_stream
+                    #     semaphore.release()
+                    #     continue
                     successes += 1
                     status = "success"
                     status_dict.increment(status)
 
-                    if self.extract_exif:
-                        try:
-                            img_stream.seek(0)
-                            exif = json.dumps(
-                                {
-                                    k: str(v).strip()
-                                    for k, v in exifread.process_file(img_stream, details=False).items()
-                                    if v is not None
-                                }
-                            )
-                        except Exception as _:  # pylint: disable=broad-except
-                            exif = None
-                        meta["exif"] = exif
+                    # if self.extract_exif:
+                    #     try:
+                    #         img_stream.seek(0)
+                    #         exif = json.dumps(
+                    #             {
+                    #                 k: str(v).strip()
+                    #                 for k, v in exifread.process_file(img_stream, details=False).items()
+                    #                 if v is not None
+                    #             }
+                    #         )
+                    #     except Exception as _:  # pylint: disable=broad-except
+                    #         exif = None
+                    #     meta["exif"] = exif
 
-                    if self.compute_hash is not None:
-                        img_stream.seek(0)
-                        meta[self.compute_hash] = getattr(hashlib, self.compute_hash)(img_stream.read()).hexdigest()
+                    # if self.compute_hash is not None:
+                    #     img_stream.seek(0)
+                    #     meta[self.compute_hash] = getattr(hashlib, self.compute_hash)(img_stream.read()).hexdigest()
 
-                    meta["status"] = status
-                    meta["width"] = width
-                    meta["height"] = height
-                    meta["original_width"] = original_width
-                    meta["original_height"] = original_height
-                    img_stream.close()
-                    del img_stream
+                    # meta["status"] = status
+                    # meta["width"] = width
+                    # meta["height"] = height
+                    # meta["original_width"] = original_width
+                    # meta["original_height"] = original_height
+                    # img_stream.close()
+                    # del img_stream
 
+                    img = img_stream.getvalue()
                     sample_writer.write(
                         img,
                         str_key,
