@@ -14,7 +14,7 @@ class StaticFilesXRobotsTagHeader(StaticFiles):
 app = FastAPI()
 
 current_folder = os.path.dirname(__file__)
-test_folder = str(current_folder) + "/" + "resize_test_image"
+test_folder = str(current_folder) + "/" + "test_pdf"
 
 
 @app.get("/")

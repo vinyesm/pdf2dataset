@@ -14,20 +14,20 @@ if __name__ == "__main__":
     REQUIREMENTS = _read_reqs("requirements.txt")
 
     setup(
-        name="img2dataset",
+        name="pdf2dataset",
         packages=find_packages(),
         include_package_data=True,
-        version="1.45.0",
+        version="1.0.0",
         license="MIT",
-        description="Easily turn a set of image urls to an image dataset",
+        description="Easily turn a set of pdf urls to an image dataset",
         long_description=long_description,
         long_description_content_type="text/markdown",
-        entry_points={"console_scripts": ["img2dataset = img2dataset:main"]},
-        author="Romain Beaumont",
-        author_email="romain.rom1@gmail.com",
-        url="https://github.com/rom1504/img2dataset",
+        entry_points={"console_scripts": ["pdf2dataset = pdf2dataset:main"]},
+        author="Marina Vinyes",
+        author_email="vinyes.marina@gmail.com",
+        url="https://github.com/vinyesm/pdf2dataset",
         data_files=[(".", ["README.md"])],
-        keywords=["machine learning", "computer vision", "download", "image", "dataset"],
+        keywords=["machine learning", "text", "download", "pdf", "dataset"],
         install_requires=REQUIREMENTS,
         classifiers=[
             "Development Status :: 4 - Beta",

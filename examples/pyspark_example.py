@@ -1,4 +1,4 @@
-from img2dataset import download
+from pdf2dataset import download
 import shutil
 import os
 from pyspark.sql import SparkSession  # pylint: disable=import-outside-toplevel
@@ -16,7 +16,6 @@ download(
     processes_count=16,
     thread_count=32,
     url_list="../tests/test_files/test_10000.parquet",
-    image_size=256,
     output_folder=output_dir,
     output_format="webdataset",
     input_format="parquet",

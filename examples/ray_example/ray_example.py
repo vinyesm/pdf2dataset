@@ -3,7 +3,7 @@ import time
 from collections import Counter
 
 import ray
-from img2dataset import download
+from pdf2dataset import download
 
 import argparse
 

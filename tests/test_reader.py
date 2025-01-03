@@ -1,4 +1,4 @@
-from img2dataset.reader import Reader
+from pdf2dataset.reader import Reader
 import os
 from fixtures import generate_input_file, setup_fixtures
 import pytest

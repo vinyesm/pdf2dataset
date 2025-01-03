@@ -8,27 +8,28 @@ import gzip
 
 
 def setup_fixtures(count=5, disallowed=0):
+    print("setup_fixtures")
     test_list = []
     current_folder = os.path.dirname(__file__)
-    test_folder = current_folder + "/" + "resize_test_image"
+    test_folder = current_folder + "/" + "test_pdf"
     port = f"123{sys.version_info.minor}"
-    image_paths = glob.glob(test_folder + "/*")
+    pdf_paths = glob.glob(test_folder + "/*")
     for i in range(count):
-        item = random.randint(0, len(image_paths) - 1)
+        item = random.randint(0, len(pdf_paths) - 1)
         test_list.append(
             (
                 f"caption {i}" if i != 0 else "",
-                image_paths[item].replace(test_folder, f"http://localhost:{port}/allowed"),
+                pdf_paths[item].replace(test_folder, f"http://localhost:{port}/allowed"),
             )
         )
     test_list = test_list[:count]
 
     for i in range(disallowed):
-        item = random.randint(0, len(image_paths) - 1)
+        item = random.randint(0, len(pdf_paths) - 1)
         test_list.append(
             (
                 f"caption {i}" if i != 0 else "",
-                image_paths[item].replace(test_folder, f"http://localhost:{port}/disallowed"),
+                pdf_paths[item].replace(test_folder, f"http://localhost:{port}/disallowed"),
             )
         )
     test_list = test_list[: count + disallowed]
@@ -112,46 +113,3 @@ def generate_input_file(input_format, url_list_name, test_list):
 def get_all_files(folder, ext):
     return sorted(list(glob.glob(folder + "/**/*." + ext, recursive=True)))
 
-
-def check_one_image_size(img, img_unresized, image_size, resize_mode, resize_only_if_bigger):
-    width = img.shape[1]
-    height = img.shape[0]
-    width_unresized = img_unresized.shape[1]
-    height_unresized = img_unresized.shape[0]
-    resized = True
-    if resize_only_if_bigger:
-        if (
-            max(width_unresized, height_unresized) <= image_size
-            and resize_mode == "border"
-            or min(width_unresized, height_unresized) <= image_size
-            and resize_mode in ["keep_ratio", "center_crop"]
-        ):
-            if width_unresized != width or height_unresized != height:
-                raise Exception(
-                    f"Image size is not the same as the original one in resize only if bigger mode,"
-                    f"expected={width_unresized}, {height_unresized} found={width}, {height}"
-                )
-            else:
-                resized = False
-
-    if not resized:
-        return
-
-    if resize_mode == "border":
-        if width != image_size or height != image_size:
-            raise Exception(f"Image size is not 256x256 in border mode found={width}x{height}")
-    elif resize_mode == "keep_ratio":
-        ratio = float(image_size) / min(width_unresized, height_unresized)
-        new_size = tuple([round(x * ratio) for x in [width_unresized, height_unresized]])
-        if new_size != (width, height):
-            raise Exception(
-                f"Image size is not of the right size in keep ratio mode"
-                f"expected = {new_size[0]},  {new_size[1]} found = {width},  {height} "
-            )
-
-
-def check_image_size(file_list, l_unresized, image_size, resize_mode, resize_only_if_bigger):
-    for file, file_unresized in zip(file_list, l_unresized):
-        img = cv2.imread(file)
-        img_unresized = cv2.imread(file_unresized)
-        check_one_image_size(img, img_unresized, image_size, resize_mode, resize_only_if_bigger)

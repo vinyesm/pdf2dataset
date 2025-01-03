@@ -6,8 +6,8 @@ install-dev: ## [Local development] Install test requirements
 	python -m pip install -r requirements-test.txt
 
 lint: ## [Local development] Run mypy, pylint and black
-	python -m mypy img2dataset
-	python -m pylint img2dataset
+	python -m mypy pdf2dataset
+	python -m pylint pdf2dataset
 	python -m black --check -l 120 .
 
 black: ## [Local development] Auto-format python code using black
@@ -16,7 +16,7 @@ black: ## [Local development] Auto-format python code using black
 build-pex:
 	python3 -m venv .pexing
 	. .pexing/bin/activate && python -m pip install -U pip && python -m pip install pex
-	. .pexing/bin/activate && python -m pex setuptools scipy==1.9.0 gcsfs s3fs pyspark==3.2.0 requests==2.27.1 . -o img2dataset.pex -v
+	. .pexing/bin/activate && python -m pex setuptools scipy==1.9.0 gcsfs s3fs pyspark==3.2.0 requests==2.27.1 . -o pdf2dataset.pex -v
 	rm -rf .pexing
 
 test: ## [Local development] Run unit tests

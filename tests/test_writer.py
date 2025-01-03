@@ -1,4 +1,4 @@
-from img2dataset.writer import (
+from pdf2dataset.writer import (
     FilesSampleWriter,
     WebDatasetSampleWriter,
     ParquetSampleWriter,
@@ -18,7 +18,7 @@ import pyarrow as pa
 def test_writer(writer_type, tmp_path):
     current_folder = os.path.dirname(__file__)
     test_folder = str(tmp_path)
-    input_folder = current_folder + "/" + "resize_test_image"
+    input_folder = current_folder + "/" + "test_pdf"
     output_folder = test_folder + "/" + "test_write"
     os.mkdir(output_folder)
     image_paths = glob.glob(input_folder + "/*")
