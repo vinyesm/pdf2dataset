@@ -1,4 +1,4 @@
-"""Img2dataset"""
+"""pdf2dataset"""
 
 from typing import List, Optional
 import fire
@@ -48,23 +48,15 @@ def arguments_validator(params):
                 "key",
                 "caption",
                 "url",
-                # "width",
-                # "height",
-                # "original_width",
-                # "original_height",
                 "status",
                 "error_message",
-                # "exif",
-                # "md5",
-                # "sha256",
-                # "sha512",
             ]
         )
         intersection = save_additional_columns_set.intersection(forbidden_columns)
         if intersection:
             raise ValueError(
                 f"You cannot use in save_additional_columns the following columns: {intersection}."
-                + "img2dataset reserves these columns for its own use. Please remove them from save_additional_columns."
+                + "pdf2dataset reserves these columns for its own use. Please remove them from save_additional_columns."
             )
 
 
@@ -83,7 +75,7 @@ def download(
     save_additional_columns: Optional[List[str]] = None,
     timeout: int = 10,
     enable_wandb: bool = False,
-    wandb_project: str = "img2dataset",
+    wandb_project: str = "pdf2dataset",
     oom_shard_count: int = 5,
     compute_hash: Optional[str] = "sha256",
     verify_hash: Optional[List[str]] = None,
@@ -97,7 +89,7 @@ def download(
     disallowed_header_directives: Optional[List[str]] = None,
     encode_format: Optional[str] = "pdf",
 ):
-    """Download is the main entry point of img2dataset, it uses multiple processes and download multiple files"""
+    """Download is the main entry point of pdf2dataset, it uses multiple processes and download multiple files"""
     if disallowed_header_directives is None:
         disallowed_header_directives = ["noai", "noimageai", "noindex", "noimageindex"]
     if len(disallowed_header_directives) == 0:
