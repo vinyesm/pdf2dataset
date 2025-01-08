@@ -1,4 +1,4 @@
-"""distributor defines the distribution strategies for img2dataset"""
+"""distributor defines the distribution strategies for pdf2dataset"""
 
 from contextlib import contextmanager
 from multiprocessing import get_context
