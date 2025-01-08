@@ -5,7 +5,6 @@ from threading import Semaphore
 import urllib.request
 import io
 import math
-import exifread
 import json
 import time
 # import hashlib
