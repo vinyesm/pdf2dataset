@@ -157,12 +157,12 @@ class Reader:
                     with fs.open(tmp_file, "wb") as file:
                         with pa.ipc.new_file(file, df_shard.schema) as writer:
                             time.sleep(2) # wait to retrieve credentials
-                            print("writing to file", tmp_file)
                             writer.write_table(df_shard)
+                            print(f"writen to file {tmp_file}")
                     return (full_shard_id, tmp_file)
                 except Exception as e:  # pylint: disable=broad-except
                     if i != 9:
-                        print("retrying to write to file due to error:", e)
+                        print(f"retrying to write to file {tmp_file} due to error: {e}")
                         time.sleep(1)
                     else:
                         raise e
@@ -173,7 +173,7 @@ class Reader:
             shards = []
             # thread pool to make it faster to write files to low latency file systems (ie s3, hdfs)
             try:
-                with ThreadPool(32) as thread_pool:
+                with ThreadPool(1) as thread_pool:
                     for shard in thread_pool.imap_unordered(write_shard, shards_to_write):
                         shards.append(shard)
                 break
