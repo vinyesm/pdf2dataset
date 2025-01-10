@@ -173,7 +173,7 @@ class Reader:
             shards = []
             # thread pool to make it faster to write files to low latency file systems (ie s3, hdfs)
             try:
-                with ThreadPool(1) as thread_pool:
+                with ThreadPool(16) as thread_pool:
                     for shard in thread_pool.imap_unordered(write_shard, shards_to_write):
                         shards.append(shard)
                 break
