@@ -151,12 +151,9 @@ class Reader:
             tmp_file = self.tmp_path + f"/{full_shard_id}.feather"
             for i in range(10):
                 try:
-                    # fs = fsspec.filesystem("s3", anon=False)
                     fs, tmp_path = fsspec.core.url_to_fs(tmp_file)
                     with fs.open(tmp_path, "wb") as file:
-                    # with fs.open(tmp_file, "wb") as file:
                         with pa.ipc.new_file(file, df_shard.schema) as writer:
-                            # time.sleep(2) # wait to retrieve credentials
                             writer.write_table(df_shard)
                             print(f"writen to file {tmp_file}")
                     return (full_shard_id, tmp_file)
