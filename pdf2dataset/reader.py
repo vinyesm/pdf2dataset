@@ -157,6 +157,7 @@ class Reader:
                     with fs.open(tmp_file, "wb") as file:
                         with pa.ipc.new_file(file, df_shard.schema) as writer:
                             time.sleep(2) # wait to retrieve credentials
+                            print("writing to file", tmp_file)
                             writer.write_table(df_shard)
                     return (full_shard_id, tmp_file)
                 except Exception as e:  # pylint: disable=broad-except
