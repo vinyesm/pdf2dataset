@@ -51,11 +51,11 @@ aws iam attach-role-policy \
 
 Small example 1k pdfs
 ```bash
-bash run_job_on_cluster.sh s3://my-numina/logs s3://my-numina/env5.tar.gz s3://my-numina/pyspark_job3.py\
+bash run_job_on_cluster.sh s3://my-numina/logs s3://my-numina/env5.tar.gz s3://my-numina/pyspark_job.py\
   --processes_count=16 \
   --thread_count=32 \
   --url_list="s3://my-numina/cc-provenance-20230324-1k.csv" \
-  --output_folder="s3://my-numina/bench-pdf-small-3" \
+  --output_folder="s3://my-numina/bench-pdf-1k" \
   --output_format="files" \
   --input_format="csv" \
   --url_col="url" \
@@ -71,10 +71,10 @@ bash run_job_on_cluster.sh s3://my-numina/logs s3://my-numina/env5.tar.gz s3://m
 bash run_job_on_cluster.sh s3://my-numina/logs s3://my-numina/env5.tar.gz s3://my-numina/pyspark_job.py\
   --processes_count=16 \
   --thread_count=32 \
-  --url_list="s3://my-numina/cc-provenance-20230303.csv" \
+  --url_list="s3://my-numina/cc-provenance-20230303.csv.gz" \
   --output_folder="s3://my-numina/bench-pdf-8M" \
   --output_format="files" \
-  --input_format="csv" \
+  --input_format="csv.gz" \
   --url_col="url" \
   --enable_wandb=False \
   --number_sample_per_shard=1000 \
@@ -89,7 +89,7 @@ bash run_job_on_cluster.sh s3://my-numina/logs s3://my-numina/env5.tar.gz s3://m
   --processes_count=16 \
   --thread_count=32 \
   --url_list="s3://my-numina/CC-text5B-math/math-url-sample-00000.parquet" \
-  --output_folder="s3://my-numina/bench-math-pdf-small" \
+  --output_folder="s3://my-numina/bench-math-small" \
   --output_format="files" \
   --input_format="parquet" \
   --url_col="url" \
