@@ -48,6 +48,55 @@ aws iam attach-role-policy \
 
 ### 3. Create the cluster and run the job
 
-`bash run_job_on_cluster.sh s3://my-numina/logs s3://my-numina/env5.tar.gz s3://my-numina/pyspark_job.py s3://my-numina/CC-text5B-math/math-url-sample-00000.parquet s3://my-numina/bench-math-pdf-small`
 
-`bash run_job_on_cluster.sh s3://my-numina/logs s3://my-numina/env5.tar.gz s3://my-numina/pyspark_job.py s3://my-numina/CC-text5B-math s3://my-numina/bench-math-pdf-big`
+Small example 1k pdfs
+```bash
+bash run_job_on_cluster.sh s3://my-numina/logs s3://my-numina/env5.tar.gz s3://my-numina/pyspark_job3.py\
+  --processes_count=16 \
+  --thread_count=32 \
+  --url_list="s3://my-numina/cc-provenance-20230324-1k.csv" \
+  --output_folder="s3://my-numina/bench-pdf-small-3" \
+  --output_format="files" \
+  --input_format="csv" \
+  --url_col="url" \
+  --enable_wandb=False \
+  --number_sample_per_shard=1000 \
+  --distributor="pyspark" \
+  --encode_format="pdf" \
+  --retries=3
+```
+
+8M pdf example
+```bash
+bash run_job_on_cluster.sh s3://my-numina/logs s3://my-numina/env5.tar.gz s3://my-numina/pyspark_job.py\
+  --processes_count=16 \
+  --thread_count=32 \
+  --url_list="s3://my-numina/cc-provenance-20230324.csv" \
+  --output_folder="s3://my-numina/bench-pdf-8M" \
+  --output_format="files" \
+  --input_format="csv" \
+  --url_col="url" \
+  --enable_wandb=False \
+  --number_sample_per_shard=1000 \
+  --distributor="pyspark" \
+  --encode_format="pdf" \
+  --retries=3
+```
+
+math pdf example (a lot of invald urls)
+```bash
+bash run_job_on_cluster.sh s3://my-numina/logs s3://my-numina/env5.tar.gz s3://my-numina/pyspark_job.py\
+  --processes_count=16 \
+  --thread_count=32 \
+  --url_list="s3://my-numina/CC-text5B-math/math-url-sample-00000.parquet" \
+  --output_folder="s3://my-numina/bench-math-pdf-small" \
+  --output_format="files" \
+  --input_format="parquet" \
+  --url_col="url" \
+  --caption_col="alt" \
+  --enable_wandb=False \
+  --number_sample_per_shard=1000 \
+  --distributor="pyspark" \
+  --encode_format="pdf" \
+  --retries=3
+```
