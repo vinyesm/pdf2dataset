@@ -71,7 +71,7 @@ bash run_job_on_cluster.sh s3://my-numina/logs s3://my-numina/env5.tar.gz s3://m
 bash run_job_on_cluster.sh s3://my-numina/logs s3://my-numina/env5.tar.gz s3://my-numina/pyspark_job.py\
   --processes_count=16 \
   --thread_count=32 \
-  --url_list="s3://my-numina/cc-provenance-20230324.csv" \
+  --url_list="s3://my-numina/cc-provenance-20230303.csv" \
   --output_folder="s3://my-numina/bench-pdf-8M" \
   --output_format="files" \
   --input_format="csv" \
