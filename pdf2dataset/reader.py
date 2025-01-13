@@ -155,7 +155,6 @@ class Reader:
                     with fs.open(tmp_path, "wb") as file:
                         with pa.ipc.new_file(file, df_shard.schema) as writer:
                             writer.write_table(df_shard)
-                            print(f"writen to file {tmp_file}")
                     return (full_shard_id, tmp_file)
                 except Exception as e:  # pylint: disable=broad-except
                     if i != 9:
