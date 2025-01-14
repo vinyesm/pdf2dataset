@@ -1,4 +1,6 @@
-## Instructions for running a large img2dataset job on a ray cluster on AWS
+(TODO adapt to pdf2dataset usecase)
+
+## Instructions for running a large pdf2dataset job on a ray cluster on AWS
 First install ray:
 ``` pip install ray ```
 
