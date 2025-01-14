@@ -77,7 +77,6 @@ def download(
     enable_wandb: bool = False,
     wandb_project: str = "pdf2dataset",
     oom_shard_count: int = 5,
-    compute_hash: Optional[str] = "sha256",
     verify_hash: Optional[List[str]] = None,
     distributor: str = "multiprocessing",
     subjob_size: int = 1000,
