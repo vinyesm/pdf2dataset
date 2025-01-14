@@ -264,9 +264,7 @@ def test_webdataset(tmp_path):
 
     url_list_name = generate_input_file("txt", url_list_name, test_list)
 
-    download(
-        url_list_name, output_folder=pdf_folder_name, thread_count=32, output_format="webdataset"
-    )
+    download(url_list_name, output_folder=pdf_folder_name, thread_count=32, output_format="webdataset")
 
     l = glob.glob(pdf_folder_name + "/*.tar")
     assert len(l) == 1
@@ -291,9 +289,7 @@ def test_relative_path(tmp_path):
     url_list_name = os.path.relpath(url_list_name)
     pdf_folder_name = os.path.relpath(pdf_folder_name)
 
-    download(
-        url_list_name, output_folder=pdf_folder_name, thread_count=32, output_format="webdataset"
-    )
+    download(url_list_name, output_folder=pdf_folder_name, thread_count=32, output_format="webdataset")
 
     l = glob.glob(pdf_folder_name + "/*.tar")
     assert len(l) == 1

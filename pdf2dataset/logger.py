@@ -93,21 +93,15 @@ class SpeedLogger(Logger):
         self.failed_to_download = 0
         self.enable_wandb = enable_wandb
 
-    def __call__(
-        self, count, success, failed_to_download, start_time, end_time
-    ):  # pylint: disable=arguments-differ
+    def __call__(self, count, success, failed_to_download, start_time, end_time):  # pylint: disable=arguments-differ
         self.count += count
         self.success += success
         self.failed_to_download += failed_to_download
         self.start_time = min(start_time, self.start_time)
         self.end_time = max(end_time, self.end_time)
-        super().__call__(
-            self.count, self.success, self.failed_to_download, self.start_time, self.end_time
-        )
+        super().__call__(self.count, self.success, self.failed_to_download, self.start_time, self.end_time)
 
-    def do_log(
-        self, count, success, failed_to_download, start_time, end_time
-    ):  # pylint: disable=arguments-differ
+    def do_log(self, count, success, failed_to_download, start_time, end_time):  # pylint: disable=arguments-differ
         duration = end_time - start_time
         pdf_per_sec = count / duration
         success_ratio = 1.0 * success / count
@@ -230,7 +224,6 @@ class LoggerProcess(multiprocessing.context.SpawnProcess):
 
                 # filter out files that have an id smaller that are already done
                 stats_files = [f for f in stats_files if int(f.split("/")[-1].split("_")[0]) not in self.done_shards]
-
 
                 # get new stats files
                 new_stats_files = set(stats_files) - self.stats_files

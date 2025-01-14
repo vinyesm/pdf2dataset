@@ -112,4 +112,3 @@ def generate_input_file(input_format, url_list_name, test_list):
 
 def get_all_files(folder, ext):
     return sorted(list(glob.glob(folder + "/**/*." + ext, recursive=True)))
-
