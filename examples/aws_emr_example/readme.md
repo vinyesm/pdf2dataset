@@ -1,4 +1,4 @@
-## Instructions for launching the pdf download on EMR AWS cluster
+## Instructions for running a large pdf2dataset job on a AWS EMR cluster
 
 
 ### 1. Upload ressources to s3
