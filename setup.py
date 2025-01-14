@@ -19,7 +19,7 @@ if __name__ == "__main__":
         include_package_data=True,
         version="1.0.0",
         license="MIT",
-        description="Easily turn a set of pdf urls to an pdf dataset",
+        description="Easily turn a set of pdf urls to an pdf dataset.",
         long_description=long_description,
         long_description_content_type="text/markdown",
         entry_points={"console_scripts": ["pdf2dataset = pdf2dataset:main"]},
