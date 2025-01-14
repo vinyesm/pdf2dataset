@@ -49,7 +49,7 @@ aws iam attach-role-policy \
 ### 3. Create the cluster and run the job
 
 
-Small example 1k pdfs
+Small example 1k pdfs (18min)
 ```bash
 bash run_job_on_cluster.sh s3://my-numina/logs s3://my-numina/env5.tar.gz s3://my-numina/pyspark_job.py\
   --processes_count=16 \
@@ -66,11 +66,11 @@ bash run_job_on_cluster.sh s3://my-numina/logs s3://my-numina/env5.tar.gz s3://m
   --retries=3
 ```
 
-8M pdf example
+8M pdf example (150pdfs/s)
 ```bash
 bash run_job_on_cluster.sh s3://my-numina/logs s3://my-numina/env5.tar.gz s3://my-numina/pyspark_job.py\
   --processes_count=16 \
-  --thread_count=32 \
+  --thread_count=64 \
   --url_list="s3://my-numina/cc-provenance-20230303.csv.gz" \
   --output_folder="s3://my-numina/bench-pdf-8M" \
   --output_format="files" \
@@ -80,7 +80,8 @@ bash run_job_on_cluster.sh s3://my-numina/logs s3://my-numina/env5.tar.gz s3://m
   --number_sample_per_shard=1000 \
   --distributor="pyspark" \
   --encode_format="pdf" \
-  --retries=3
+  --retries=1 \
+  --incremental_mode="incremental"
 ```
 
 math pdf example (a lot of invald urls)
