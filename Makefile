@@ -14,9 +14,9 @@ black: ## [Local development] Auto-format python code using black
 	python -m black -l 120 .
 
 build-pex:
-	python3.8 -m venv .pexing
+	python3 -m venv .pexing
 	. .pexing/bin/activate && python -m pip install -U pip && python -m pip install pex
-	. .pexing/bin/activate && python -m pex setuptools scipy>=1.10.0 gcsfs s3fs pyspark==3.2.0 requests==2.27.1 . -o pdf2dataset.pex -v
+	. .pexing/bin/activate && python -m pex setuptools scipy>=1.10.0 gcsfs s3fs pyspark==3.2.0 requests==2.27.1 numpy<2 . -o pdf2dataset.pex -v
 	rm -rf .pexing
 
 test: ## [Local development] Run unit tests
