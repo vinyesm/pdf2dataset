@@ -5,7 +5,6 @@ from threading import Semaphore
 import urllib.request
 import io
 import math
-import json
 import time
 # import hashlib
 import pyarrow as pa
@@ -94,7 +93,6 @@ class Downloader:
         retries,
         user_agent_token,
         disallowed_header_directives,
-        blurring_bbox_col=None,
     ) -> None:
         self.sample_writer_class = sample_writer_class
         self.thread_count = thread_count

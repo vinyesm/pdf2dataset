@@ -82,7 +82,6 @@ def download(
     distributor: str = "multiprocessing",
     subjob_size: int = 1000,
     retries: int = 0,
-    disable_all_reencoding: bool = False,
     incremental_mode: str = "incremental",
     max_shard_retry: int = 1,
     user_agent_token: Optional[str] = None,
