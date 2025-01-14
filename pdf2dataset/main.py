@@ -28,9 +28,9 @@ logging.getLogger("exifread").setLevel(level=logging.CRITICAL)
 
 def arguments_validator(params):
     """Validate the arguments"""
-    if params["compute_hash"] not in [None, "md5", "sha256", "sha512"]:
-        hash_type = params["compute_hash"]
-        raise ValueError(f"Unsupported hash to compute: {hash_type}")
+    # if params["compute_hash"] not in [None, "md5", "sha256", "sha512"]:
+    #     hash_type = params["compute_hash"]
+    #     raise ValueError(f"Unsupported hash to compute: {hash_type}")
 
     if params["verify_hash"] is not None:
         _, verify_hash_type = params["verify_hash"]
@@ -77,6 +77,7 @@ def download(
     enable_wandb: bool = False,
     wandb_project: str = "pdf2dataset",
     oom_shard_count: int = 5,
+    # compute_hash: Optional[str] = "sha256",
     verify_hash: Optional[List[str]] = None,
     distributor: str = "multiprocessing",
     subjob_size: int = 1000,
