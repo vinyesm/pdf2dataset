@@ -350,8 +350,8 @@ def test_benchmark(output_format, tmp_path):
         thread_count=32,
         output_format=output_format,
         input_format="parquet",
-        url_col="URL",
-        caption_col="TEXT",
+        url_col="url",
+        caption_col="alt",
     )
 
     took = time.time() - t
