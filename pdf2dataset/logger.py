@@ -111,8 +111,8 @@ class SpeedLogger(Logger):
             " - ".join(
                 [
                     f"{self.prefix:<7}",
-                    f"success: {success_ratio:.3f}",
-                    f"failed to download: {failed_to_download_ratio:.3f}",
+                    f"success ratio: {success_ratio:.3f}",
+                    f"failed to download ratio: {failed_to_download_ratio:.3f}",
                     f"success count: {success}",
                     f"failed to download count: {failed_to_download}",
                     f"pdf per sec: {pdf_per_sec:.0f}",

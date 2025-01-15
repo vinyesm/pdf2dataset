@@ -47,13 +47,13 @@ if __name__ == "__main__":
     # successful downloads
     # 448 files
 
-    output_dir = os.path.abspath("bench-16-32-googledns-ret3")
+    output_dir = os.path.abspath("bench-16-64-bind9-ret3")
     if os.path.exists(output_dir):
         shutil.rmtree(output_dir)
 
     download(
         processes_count=16,
-        thread_count=32,
+        thread_count=64,
         url_list="math-url-sample.parquet",
         output_folder=output_dir,
         output_format="files",  # webdataset for larger datasets
