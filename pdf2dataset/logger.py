@@ -113,6 +113,8 @@ class SpeedLogger(Logger):
                     f"{self.prefix:<7}",
                     f"success: {success_ratio:.3f}",
                     f"failed to download: {failed_to_download_ratio:.3f}",
+                    f"success count: {success}",
+                    f"failed to download count: {failed_to_download}",
                     f"pdf per sec: {pdf_per_sec:.0f}",
                     f"count: {count}",
                 ]
@@ -125,6 +127,8 @@ class SpeedLogger(Logger):
                     f"{self.prefix}/pdf_per_sec": pdf_per_sec,
                     f"{self.prefix}/success": success_ratio,
                     f"{self.prefix}/failed_to_download": failed_to_download_ratio,
+                    f"{self.prefix}/success_count": success,
+                    f"{self.prefix}/failed_to_download_count": failed_to_download,
                     f"{self.prefix}/count": count,
                 }
             )

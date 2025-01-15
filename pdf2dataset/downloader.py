@@ -15,6 +15,9 @@ import fsspec
 from .logger import CappedCounter
 from .logger import write_stats
 
+import dns.resolver
+import socket
+
 
 def is_disallowed(headers, user_agent_token, disallowed_header_directives):
     """Check if HTTP headers contain an X-Robots-Tag directive disallowing usage"""
@@ -33,15 +36,38 @@ def is_disallowed(headers, user_agent_token, disallowed_header_directives):
     return False
 
 
-def download_image(row, timeout, user_agent_token, disallowed_header_directives):
-    """Download an image with urllib"""
+def resolve_hostname_with_google_dns(url, resolver):
+    """Resolve the hostname of the URL using Google DNS."""
+    hostname = urllib.parse.urlparse(url).hostname
+    answer = resolver.resolve(hostname)
+    ip_address = answer[0].to_text()  # Get the resolved IP address
+    return ip_address
+
+def download_image(row, timeout, user_agent_token, disallowed_header_directives, resolver):
+    """Download a PDF with urllib, using Google DNS for resolution."""
     key, url = row
     img_stream = None
     user_agent_string = "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:72.0) Gecko/20100101 Firefox/72.0"
+    
     if user_agent_token:
         user_agent_string += f" (compatible; {user_agent_token}; +https://github.com/vinyesm/pdf2dataset)"
+    
     try:
-        request = urllib.request.Request(url, data=None, headers={"User-Agent": user_agent_string})
+        # Resolve the hostname using Google DNS
+        ip_address = resolve_hostname_with_google_dns(url, resolver)
+        url_parsed = urllib.parse.urlparse(url)
+        resolved_url = f"{url_parsed.scheme}://{ip_address}{url_parsed.path}"
+        
+        # Create a request with the resolved IP and proper Host header
+        request = urllib.request.Request(
+            resolved_url,
+            data=None,
+            headers={
+                "User-Agent": user_agent_string,
+                "Host": url_parsed.hostname  # Keep original hostname in Host header
+            }
+        )
+        
         with urllib.request.urlopen(request, timeout=timeout) as r:
             content_type = r.headers.get("Content-Type", "").lower()
             if "application/pdf" not in content_type:
@@ -52,17 +78,47 @@ def download_image(row, timeout, user_agent_token, disallowed_header_directives)
                 disallowed_header_directives,
             ):
                 return key, None, "Use of image disallowed by X-Robots-Tag directive"
+            
             img_stream = io.BytesIO(r.read())
+        
         return key, img_stream, None
+    
     except Exception as err:  # pylint: disable=broad-except
         if img_stream is not None:
             img_stream.close()
         return key, None, str(err)
 
 
-def download_image_with_retry(row, timeout, retries, user_agent_token, disallowed_header_directives):
+# def download_image(row, timeout, user_agent_token, disallowed_header_directives):
+#     """Download an image with urllib"""
+#     key, url = row
+#     img_stream = None
+#     user_agent_string = "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:72.0) Gecko/20100101 Firefox/72.0"
+#     if user_agent_token:
+#         user_agent_string += f" (compatible; {user_agent_token}; +https://github.com/vinyesm/pdf2dataset)"
+#     try:
+#         request = urllib.request.Request(url, data=None, headers={"User-Agent": user_agent_string})
+#         with urllib.request.urlopen(request, timeout=timeout) as r:
+#             content_type = r.headers.get("Content-Type", "").lower()
+#             if "application/pdf" not in content_type:
+#                 return key, None, "URL does not point to a PDF file"
+#             if disallowed_header_directives and is_disallowed(
+#                 r.headers,
+#                 user_agent_token,
+#                 disallowed_header_directives,
+#             ):
+#                 return key, None, "Use of image disallowed by X-Robots-Tag directive"
+#             img_stream = io.BytesIO(r.read())
+#         return key, img_stream, None
+#     except Exception as err:  # pylint: disable=broad-except
+#         if img_stream is not None:
+#             img_stream.close()
+#         return key, None, str(err)
+
+
+def download_image_with_retry(row, timeout, retries, user_agent_token, disallowed_header_directives, resolver):
     for _ in range(retries + 1):
-        key, img_stream, err = download_image(row, timeout, user_agent_token, disallowed_header_directives)
+        key, img_stream, err = download_image(row, timeout, user_agent_token, disallowed_header_directives, resolver)
         if img_stream is not None:
             return key, img_stream, err
     return key, None, err
@@ -111,6 +167,8 @@ class Downloader:
             if disallowed_header_directives is None
             else {directive.strip().lower() for directive in disallowed_header_directives}
         )
+        self.resolver = dns.resolver.Resolver()
+        self.resolver.nameservers = ['8.8.8.8', '8.8.4.4']
 
     def __call__(
         self,
@@ -186,6 +244,7 @@ class Downloader:
                     retries=self.retries,
                     user_agent_token=self.user_agent_token,
                     disallowed_header_directives=self.disallowed_header_directives,
+                    resolver=self.resolver,
                 ),
                 loader,
             ):
