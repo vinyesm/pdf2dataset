@@ -7,6 +7,9 @@ usage:
     pip install pdf2dataset-tools
     wandb login # if you want to use wandb
     python download_math_pdfs.py
+
+note: if you use parallelization you need to monitor bottleneck resources (CPU, memory, network, disk). 
+When downloading many urls DNS can be the bottleneck a setting a local dns like bind9 helps
 """
 
 from pdf2dataset import download
@@ -15,9 +18,6 @@ import os
 import pyarrow as pa
 import pyarrow.compute as pc
 import pyarrow.parquet as pq
-import socket
-from urllib.parse import urlparse
-from tqdm import tqdm
 
 
 def math_filter(table):
@@ -45,15 +45,16 @@ if __name__ == "__main__":
     # >>> len(filtered_table)
     # 119_591
     # successful downloads
-    # 448 files
+    # 575 pdf files
 
-    output_dir = os.path.abspath("bench-16-64-bind9-ret3")
+    output_dir = os.path.abspath("bench")
     if os.path.exists(output_dir):
         shutil.rmtree(output_dir)
 
+    # runs in 34min on a 32-core machine
     download(
         processes_count=16,
-        thread_count=64,
+        thread_count=32,
         url_list="math-url-sample.parquet",
         output_folder=output_dir,
         output_format="files",  # webdataset for larger datasets
