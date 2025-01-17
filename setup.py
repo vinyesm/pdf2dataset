@@ -17,7 +17,7 @@ if __name__ == "__main__":
         name="pdf2dataset-tools",
         packages=find_packages(),
         include_package_data=True,
-        version="1.0.0",
+        version="1.0.1",
         license="MIT",
         description="Easily turn a set of pdf urls to an pdf dataset.",
         long_description=long_description,
