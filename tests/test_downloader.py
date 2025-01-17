@@ -33,6 +33,7 @@ def test_downloader(tmp_path):
         timeout=10,
         number_sample_per_shard=10,
         oom_shard_count=5,
+        compute_hash="sha256",
         encode_format="pdf",
         retries=0,
         user_agent_token="pdf2dataset",

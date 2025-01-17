@@ -61,6 +61,7 @@ def test_download_input_format(input_format, output_format, tmp_path):
         thread_count=32,
         input_format=input_format,
         output_format=output_format,
+        compute_hash=None,
         url_col="url",
         caption_col="caption",
     )
