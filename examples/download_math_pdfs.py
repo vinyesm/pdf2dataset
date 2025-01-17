@@ -22,13 +22,13 @@ import pyarrow.parquet as pq
 
 def math_filter(table):
     regex1 = r"contest|problem|solution|competition|olympiad|exam|test|problem set|problemset|exercise"
-    mask1 = pc.match_substring_regex(table['url'], regex1)
+    mask1 = pc.match_substring_regex(table["url"], regex1)
     table1 = table.filter(mask1)
     regex2 = r"math|calculus|algebra|geometry|trigonometry|probability|combinatorics|number theory"
-    mask2 = pc.match_substring_regex(table1['url'], regex2)
+    mask2 = pc.match_substring_regex(table1["url"], regex2)
     table2 = table1.filter(mask2)
     return table2
-    
+
 
 if __name__ == "__main__":
     input_path = "part-00080-dc7779ff-a280-46f5-8cd8-bf64283145c8-c000.snappy.parquet"
@@ -63,11 +63,11 @@ if __name__ == "__main__":
         caption_col="alt",
         enable_wandb=True,
         number_sample_per_shard=1_000,
-        distributor="multiprocessing", # maybe pyspark on cluster for very large datasets
+        distributor="multiprocessing",  # maybe pyspark on cluster for very large datasets
         compute_hash="sha256",
         encode_format="pdf",
-        retries=3, # 1 for large datasets
-        timeout=10
+        retries=3,  # 1 for large datasets
+        timeout=10,
     )
 
     # rm -rf bench

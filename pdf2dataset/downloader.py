@@ -200,10 +200,7 @@ class Downloader:
                     str_key = compute_key(key, shard_id, oom_sample_per_shard, self.oom_shard_count)
                     meta = {
                         # Skip columns containing a the verification hash and only save the compute hash
-                        **{
-                            self.column_list[i]: sample_data[i]
-                            for i in range(len(self.column_list))
-                        },
+                        **{self.column_list[i]: sample_data[i] for i in range(len(self.column_list))},
                         "key": str_key,
                         "status": None,
                         "error_message": error_message,
