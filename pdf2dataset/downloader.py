@@ -7,7 +7,7 @@ import io
 import math
 import time
 
-# import hashlib
+import hashlib
 import pyarrow as pa
 import traceback
 
@@ -43,9 +43,9 @@ def download_image(row, timeout, user_agent_token, disallowed_header_directives)
     try:
         request = urllib.request.Request(url, data=None, headers={"User-Agent": user_agent_string})
         with urllib.request.urlopen(request, timeout=timeout) as r:
-            content_type = r.headers.get("Content-Type", "").lower()
-            if "application/pdf" not in content_type:
-                return key, None, "URL does not point to a PDF file"
+            # content_type = r.headers.get("Content-Type", "").lower()
+            # if "application/pdf" not in content_type:
+            #     return key, None, "URL does not point to a PDF file"
             if disallowed_header_directives and is_disallowed(
                 r.headers,
                 user_agent_token,
@@ -90,6 +90,7 @@ class Downloader:
         timeout,
         number_sample_per_shard,
         oom_shard_count,
+        compute_hash,
         encode_format,
         retries,
         user_agent_token,
@@ -103,6 +104,7 @@ class Downloader:
         self.timeout = timeout
         self.number_sample_per_shard = number_sample_per_shard
         self.oom_shard_count = oom_shard_count
+        self.compute_hash = compute_hash
         self.encode_format = encode_format
         self.retries = retries
         self.user_agent_token = None if user_agent_token is None else user_agent_token.strip().lower()
@@ -111,8 +113,6 @@ class Downloader:
             if disallowed_header_directives is None
             else {directive.strip().lower() for directive in disallowed_header_directives}
         )
-        # self.resolver = dns.resolver.Resolver()
-        # self.resolver.nameservers = ['8.8.8.8', '8.8.4.4']
 
     def __call__(
         self,
@@ -144,6 +144,9 @@ class Downloader:
             .append(pa.field("status", pa.string()))
             .append(pa.field("error_message", pa.string()))
         )
+
+        if self.compute_hash is not None and self.compute_hash not in schema.names:
+            schema = schema.append(pa.field(self.compute_hash, pa.string()))
 
         pydict = df.select(self.column_list).to_pydict()
         shard_to_dl = list(enumerate(zip(*(pydict[col] for col in self.column_list))))
@@ -196,11 +199,18 @@ class Downloader:
                     _, sample_data = shard_to_dl[key]
                     str_key = compute_key(key, shard_id, oom_sample_per_shard, self.oom_shard_count)
                     meta = {
-                        **{self.column_list[i]: sample_data[i] for i in range(len(self.column_list))},
+                        # Skip columns containing a the verification hash and only save the compute hash
+                        **{
+                            self.column_list[i]: sample_data[i]
+                            for i in range(len(self.column_list))
+                        },
                         "key": str_key,
                         "status": None,
                         "error_message": error_message,
                     }
+
+                    if self.compute_hash is not None:
+                        meta[self.compute_hash] = None
 
                     if error_message is not None:
                         failed_to_download += 1
@@ -221,6 +231,11 @@ class Downloader:
                     status_dict.increment(status)
 
                     img = img_stream.getvalue()
+
+                    if self.compute_hash is not None:
+                        img_stream.seek(0)
+                        meta[self.compute_hash] = getattr(hashlib, self.compute_hash)(img_stream.read()).hexdigest()
+
                     sample_writer.write(
                         img,
                         str_key,

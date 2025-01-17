@@ -22,7 +22,7 @@ if __name__ == "__main__":
         number_sample_per_shard=1_000,
         distributor="multiprocessing",
         encode_format="pdf",
-        retries=3,
+        retries=0,
     )
 
     # rm -rf bench

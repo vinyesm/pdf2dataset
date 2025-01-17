@@ -64,6 +64,7 @@ if __name__ == "__main__":
         enable_wandb=True,
         number_sample_per_shard=1_000,
         distributor="multiprocessing", # maybe pyspark on cluster for very large datasets
+        compute_hash="sha256",
         encode_format="pdf",
         retries=3, # 1 for large datasets
         timeout=10

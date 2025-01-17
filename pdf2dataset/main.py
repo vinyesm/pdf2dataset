@@ -28,9 +28,9 @@ logging.getLogger("exifread").setLevel(level=logging.CRITICAL)
 
 def arguments_validator(params):
     """Validate the arguments"""
-    # if params["compute_hash"] not in [None, "md5", "sha256", "sha512"]:
-    #     hash_type = params["compute_hash"]
-    #     raise ValueError(f"Unsupported hash to compute: {hash_type}")
+    if params["compute_hash"] not in [None, "md5", "sha256", "sha512"]:
+        hash_type = params["compute_hash"]
+        raise ValueError(f"Unsupported hash to compute: {hash_type}")
 
     if params["verify_hash"] is not None:
         _, verify_hash_type = params["verify_hash"]
@@ -68,7 +68,7 @@ def download(
     input_format: str = "txt",
     url_col: str = "url",
     caption_col: Optional[str] = None,
-    bbox_col: Optional[str] = None,
+    # bbox_col: Optional[str] = None,
     thread_count: int = 256,
     number_sample_per_shard: int = 10000,
     # extract_exif: bool = True,
@@ -77,7 +77,7 @@ def download(
     enable_wandb: bool = False,
     wandb_project: str = "pdf2dataset",
     oom_shard_count: int = 5,
-    # compute_hash: Optional[str] = "sha256",
+    compute_hash: Optional[str] = "sha256",
     verify_hash: Optional[List[str]] = None,
     distributor: str = "multiprocessing",
     subjob_size: int = 1000,
@@ -148,11 +148,11 @@ def download(
     logger_process.done_shards = done_shards
     logger_process.start()
 
-    if bbox_col is not None:
-        if save_additional_columns is None:
-            save_additional_columns = [bbox_col]
-        else:
-            save_additional_columns.append(bbox_col)
+    # if bbox_col is not None:
+    #     if save_additional_columns is None:
+    #         save_additional_columns = [bbox_col]
+    #     else:
+    #         save_additional_columns.append(bbox_col)
 
     if verify_hash is not None:
         verify_hash_col, verify_hash_type = verify_hash
@@ -196,6 +196,7 @@ def download(
         timeout=timeout,
         number_sample_per_shard=number_sample_per_shard,
         oom_shard_count=oom_shard_count,
+        compute_hash=compute_hash,
         encode_format=encode_format,
         retries=retries,
         user_agent_token=user_agent_token,
