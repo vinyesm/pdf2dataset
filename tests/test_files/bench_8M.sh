@@ -9,8 +9,8 @@ pdf2dataset \
   --output_format="webdataset" \
   --input_format="csv.gz" \
   --url_col="url" \
-  --enable_wandb=False \
+  --enable_wandb=True \
   --number_sample_per_shard=1000 \
-  --distributor="pyspark" \
+  --distributor="multiprocessing" \
   --encode_format="pdf" \
   --retries=0
