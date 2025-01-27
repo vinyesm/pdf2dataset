@@ -43,9 +43,9 @@ def download_image(row, timeout, user_agent_token, disallowed_header_directives)
     try:
         request = urllib.request.Request(url, data=None, headers={"User-Agent": user_agent_string})
         with urllib.request.urlopen(request, timeout=timeout) as r:
-            # content_type = r.headers.get("Content-Type", "").lower()
-            # if "application/pdf" not in content_type:
-            #     return key, None, "URL does not point to a PDF file"
+            content_type = r.headers.get("Content-Type", "").lower()
+            if "application/pdf" not in content_type:
+                return key, None, "URL does not point to a PDF file"
             if disallowed_header_directives and is_disallowed(
                 r.headers,
                 user_agent_token,
